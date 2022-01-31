@@ -1,0 +1,2 @@
+Used DB PostgreSQL fullstack_chat
+create table schema - file update_001.sql
