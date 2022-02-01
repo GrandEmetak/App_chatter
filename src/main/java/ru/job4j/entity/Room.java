@@ -1,4 +1,4 @@
-package ru.job4j.domain;
+package ru.job4j.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

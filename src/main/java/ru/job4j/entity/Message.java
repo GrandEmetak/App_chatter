@@ -1,4 +1,4 @@
-package ru.job4j.domain;
+package ru.job4j.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,8 +20,6 @@ public class Message {
     @EqualsAndHashCode.Include
     private int id;
 
-//    private String name;
-
     private String description;
 
     private LocalDateTime created;
@@ -29,11 +27,9 @@ public class Message {
     public Message() {
     }
 
- //   String name,
-    public  static Message of(int id, String description) {
+    public static Message of(int id, String description) {
         Message message = new Message();
         message.id = id;
-//        message.name = name;
         message.description = description;
         return message;
     }

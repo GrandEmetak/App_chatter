@@ -1,7 +1,7 @@
 package ru.job4j.service;
 
 import org.springframework.stereotype.Service;
-import ru.job4j.domain.Person;
+import ru.job4j.entity.Person;
 import ru.job4j.repository.PersonRepository;
 
 import java.util.Optional;
