@@ -39,15 +39,15 @@ insert into room(name)
 values ('Куда сходить в выходные');
 
 insert into person(enabled, password, username, role_id, room_id)
-VALUES (true, '123', 'Petr Arsentev', 1, 1);
+VALUES (true, '$2a$10$1LvfibSCmvbDVRB/zNJfteJzSbkA4TJqUNKqk4hrNewdvAq4QC5Di', 'Petr Arsentev', 1, 1);
 insert into person(enabled, password, username, role_id, room_id)
-VALUES (true, '234', 'Ivan Sobolev', 1, 1);
+VALUES (true, '$2a$10$d8caLcgVFCa9itdmDrv4ueA41QCFwbHHd9CSHFyApwsq7JrmaQbje', 'Ivan Sobolev', 1, 1);
 insert into person(enabled, password, username, role_id, room_id)
-VALUES (true, '345', 'Nikolay Vodin', 1, 3);
+VALUES (true, '$2a$10$5bBRrJJO6Go/yJxY7PeOMO3ETtAUCeTBxtZLOvyhOKs3AvZym/.Ei', 'Nikolay Vodin', 1, 3);
 insert into person(enabled, password, username, role_id, room_id)
-VALUES (true, '456', 'Svetlana Donovan', 1, 3);
+VALUES (true, '$2a$10$lHTUyc1gGu2T4.sHgldw5e8ywUXoRjsnazKbzc9SuicaugoNkaOQC', 'Svetlana Donovan', 1, 3);
 insert into person(enabled, password, username, role_id, room_id)
-VALUES (true, '567', 'Sergei Shirokov', 1, 3);
+VALUES (true, '$2a$10$9hxGrSo10ruUgT4PuoCAtOZcoYzyCMhzp9/v/4TFoCGCfsUT1E0qu', 'Sergei Shirokov', 1, 3);
 
 insert into message(description, person_id)
 values ('Велопрогулка будет самым лучшым время препровождением в выходной', 1);

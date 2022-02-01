@@ -1,2 +1,9 @@
 Used DB PostgreSQL  DB = fullstack_chat
 create table schema - file update_001.sql
+create security sql :
+Petr Arsentev pass=123
+Ivan Sobolev pass=123456
+Nikolay Vodin pass=345
+Svetlana Donovan pass=456
+Sergei Shirokov pass=567
+
