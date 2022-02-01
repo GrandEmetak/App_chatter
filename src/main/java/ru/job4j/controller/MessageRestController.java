@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Для возможности стороннего REST API.
  * RestTemplate - позволяет осуществлять вывозы стороннего REST API.
  * в нем мы объявили поле RestTemplate rest с аннотацией @Autowired,
  * поле будет проинициализировано значением бина,
@@ -24,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/messagereport")
 public class MessageRestController {
-    // TODO дописать описание в методах
+
     private static final String API = "http://localhost:8080/messages/";
 
     private static final String API_ID = "http://localhost:8080/messages/{id}";
@@ -33,12 +34,12 @@ public class MessageRestController {
     private RestTemplate rest;
 
     /**
-     * GET /employee/ - получить список employees.
-     * метод для получения отчета со всем списком Employee
+     * GET /messages/ - получить список persons.
+     * метод для получения отчета со всем списком Message
      *
      * curl -i http://localhost:8080/messagereport/
      *
-     * @return List<ReportEmployee>
+     * @return List<Report<Message>>
      */
     @GetMapping("/")
     public List<ReportMessage> findAll() {
@@ -58,17 +59,18 @@ public class MessageRestController {
 
     /**
      * -@PostMapping("/")
-     * POST /person/ - создать new Message.
+     * POST /message/ - создать new Message.
      * запрос имеет вид одной строкой
      * curl -H 'Content-Type: application/json' -X POST -d
-     * '{"name":"Petr","surname":"Shirokov","inn":"0258741"}' http://localhost:8080/employeereport/
+     * '{"description":"Велопрогулка будет самым лучшым время препровождением в выходной"}' http://localhost:8080/messagereport/
      * String API -Переменная API_ID - содержит параметре {id}, который проставляется в аргументах метода.
      * Spring запущен и происходит запрос Hibernate
-     * Hibernate: insert into person (login, password) values (?, ?)
+     * Hibernate: insert into message (description) values (?)
      * что в консоли GitBush
      * Dload  Upload   Total   Spent    Left  Speed
      * 100    95    0    51  100    44    117    101 --:--:-- --:--:-- --:--:--
-     * 219{"id":5,"login":"job4j@gmail.com","password":"123"}
+     * 219{"id":5,"description":"Велопрогулка будет самым лучшым время препровождением в выходной",
+     * "created":"2022-02-01T10:13:01.110276"}
      * @param message
      * @return
      */
@@ -79,10 +81,10 @@ public class MessageRestController {
     }
 
     /**
-     * PUT /employee/ - обновить пользователя.
+     * PUT /message/ - обновить пользователя.
      * выполняем следующий запрос: одной строкой
      * curl -i -H 'Content-Type: application/json' -X PUT -d
-     * '{"id":"4","name":"John","surname":"Conor","inn":"0000001"}' http://localhost:8080/employeereport/
+     * '{"description":"Have a nice day)))"}' http://localhost:8080/messagereport/
      * !!!
      *  Важно понимать, что если такой записи, которую мы передаем в запросе не будет в БД,
      *  то вместо замены будет выполнена вставка.
@@ -98,10 +100,10 @@ public class MessageRestController {
 
 
     /**
-     * DELETE /person/ - удалить пользователя.
+     * DELETE /message/ - удалить пользователя.
      * Выполним запрос, удаляя запись с id = 5:
-     * curl -i -X DELETE http://localhost:8080/employeereport/4
-     * private static final String API_ID = "http://localhost:8080/employee/{id}";
+     * curl -i -X DELETE http://localhost:8080/messagereport/4
+     * private static final String API_ID = "http://localhost:8080/message/{id}";
      * Переменная API_ID - содержит параметре {id}, который проставляется в аргументах метода.
      * @param id
      * @return

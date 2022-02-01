@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
- * посмотрим все активные комнаты с их содержимым
+ * посмотр, все активные комнаты с их содержимым
  */
 @RestController
 @RequestMapping("/rooms")

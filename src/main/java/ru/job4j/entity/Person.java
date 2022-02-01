@@ -57,7 +57,7 @@ public class Person {
         return person;
     }
 
-    public Message add(Message message) {
+    public Message addMessage(Message message) {
         this.messages.add(message);
         return message;
     }

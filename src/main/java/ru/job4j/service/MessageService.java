@@ -9,6 +9,9 @@ import ru.job4j.repository.MessageRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * сервис сообщений
+ */
 @Service
 public class MessageService {
 
