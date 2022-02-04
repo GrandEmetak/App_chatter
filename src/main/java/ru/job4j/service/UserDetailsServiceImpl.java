@@ -19,14 +19,14 @@ import ru.job4j.repository.PersonRepository;
  * Этот сервис будет загружать в SecutiryHolder детали авторизованного пользователя.
  */
 @Service
-public class UserDatailsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserDatailsServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
     private static final Marker DEBUG = MarkerFactory.getMarker("DEBUG");
 
     private PersonRepository personRepository;
 
-    public UserDatailsServiceImpl(PersonRepository personRepository) {
+    public UserDetailsServiceImpl(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
 

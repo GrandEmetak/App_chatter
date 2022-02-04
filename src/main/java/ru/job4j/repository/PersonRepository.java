@@ -19,7 +19,5 @@ import ru.job4j.entity.Person;
  */
 public interface PersonRepository extends CrudRepository<Person, Integer> {
 
-    Person findPersonByName(String username);
-
     Person findByUsername(String username);
 }
