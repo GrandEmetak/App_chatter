@@ -3,6 +3,7 @@ package ru.job4j.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.entity.Person;
 import ru.job4j.entity.Room;
 import ru.job4j.service.RoomService;
@@ -13,6 +14,13 @@ import java.util.stream.StreamSupport;
 
 /**
  * посмотр, все активные комнаты с их содержимым
+ * В методах поиска по id добавлен выброс исключения со статусом HttpStatus.NOT_FOUND в случае,
+ * если данные не найдены.
+ * + все Exception на null будет отлвливать глобавльный контролеер
+ * -@ControllerAdvise *
+ * аннотация @ControllerAdvise используемая совместно с @ExceptionHandler.
+ * Код контроллера обрабатывает все исключения NullPointerException,
+ * которые возникают во всех контроллерах:
  */
 @RestController
 @RequestMapping("/rooms")
@@ -33,15 +41,22 @@ public class RoomController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Room> findById(@PathVariable int id) {
+        if (id == 0) {
+            throw new NullPointerException("The id Room mustn't be empty!");
+        }
         var person = this.roomService.findById(id);
         return new ResponseEntity<>(
-                person.orElse(new Room()),
-                person.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND
+                person.orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Room is not found. Please, check requisites."
+                )), person.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND
         );
     }
 
     @PostMapping("/")
     public ResponseEntity<Room> create(@RequestBody Room room) {
+        if (room.getName() == null) {
+            throw new NullPointerException("The Room name mustn't be empty!");
+        }
         return new ResponseEntity<>(
                 this.roomService.save(room),
                 HttpStatus.CREATED
@@ -50,15 +65,38 @@ public class RoomController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Room room) {
+        if (room.getName() == null) {
+            throw new NullPointerException("The Room name mustn't be empty!");
+        }
+        var rsl = roomService.findById(room.getId());
+
+        if (!rsl.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Room is not found. Please, check requisites.");
+        }
         this.roomService.save(room);
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Удаление Room Object By Id
+     * В методах поиска по id добавлен выброс исключения со статусом HttpStatus.NOT_FOUND в случае,
+     * если данные не найдены.
+     * @param id
+     * @return
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        Room room = new Room();
-        room.setId(id);
-        this.roomService.delete(room);
+        if (id == 0) {
+            throw new NullPointerException("The Room name mustn't be empty!");
+        }
+        var rsl = roomService.findById(id);
+        if (rsl.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Room is not found. Please, check requisites id.");
+
+        }
+        this.roomService.deleteById(id);
         return ResponseEntity.ok().build();
     }
 }

@@ -36,6 +36,10 @@ public class PersonService {
         personRepository.delete(person);
     }
 
+    public void deleteById(int id) {
+        personRepository.deleteById(id);
+    }
+
     private Role findRoleById(int id) {
         Optional<Role> role = repository.findById(1);
         var r = role.orElse(new Role());

@@ -32,4 +32,8 @@ public class RoomService {
     public void delete(Room room) {
         repository.delete(room);
     }
+
+    public void deleteById(int id) {
+        repository.deleteById(id);
+    }
 }
