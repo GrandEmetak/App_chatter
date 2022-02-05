@@ -71,7 +71,7 @@ public class PersonController {
 
     @PostMapping("/")
     public ResponseEntity<Person> create(@RequestBody Person person) {
-        if (person.getUsername() == null || person.getPassword() == null) {
+        if (person.getUsername().isEmpty() || person.getPassword() == null) {
             throw new NullPointerException("Person username and password mustn't be empty!");
         }
         return new ResponseEntity<>(
@@ -82,7 +82,7 @@ public class PersonController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
-        if (person.getUsername() == null || person.getPassword() == null) {
+        if (person.getUsername().isEmpty() || person.getPassword() == null) {
             throw new NullPointerException("Person username and password mustn't be empty!");
         }
         this.personService.save(person);
@@ -105,16 +105,16 @@ public class PersonController {
 
     /**
      * регистрация
-     *
+     *  + валидация на пустоя поле пароль/имя
      * @param person
      * @return
      */
     @PostMapping("/sign-up")
     public ResponseEntity<Person> signUp(@RequestBody Person person) {
-        if (person.getPassword() == null || person.getUsername() == null) {
+        if (person.getPassword() == null || person.getUsername().isEmpty()) {
             throw new NullPointerException("Username and password mustn't be empty");
         }
-        if (person.getPassword().length() < 6) {
+        if (person.getPassword().length() < 3) {
             throw new IllegalArgumentException("Invalid Person parameter of field password");
         }
         person.setPassword(encoder.encode(person.getPassword()));

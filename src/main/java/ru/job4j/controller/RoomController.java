@@ -54,7 +54,7 @@ public class RoomController {
 
     @PostMapping("/")
     public ResponseEntity<Room> create(@RequestBody Room room) {
-        if (room.getName() == null) {
+        if (room.getName().isEmpty()) {
             throw new NullPointerException("The Room name mustn't be empty!");
         }
         return new ResponseEntity<>(
@@ -65,7 +65,7 @@ public class RoomController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Room room) {
-        if (room.getName() == null) {
+        if (room.getName().isEmpty()) {
             throw new NullPointerException("The Room name mustn't be empty!");
         }
         var rsl = roomService.findById(room.getId());

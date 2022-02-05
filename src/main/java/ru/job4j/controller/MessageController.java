@@ -55,7 +55,7 @@ public class MessageController {
 
     @PostMapping("/")
     public ResponseEntity<Message> create(@RequestBody Message message) {
-        if (message.getDescription() == null) {
+        if (message.getDescription().isEmpty()) {
             throw new NullPointerException("Message Person mustn't be empty!");
         }
         return new ResponseEntity<>(
@@ -66,7 +66,7 @@ public class MessageController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Message message) {
-        if (message.getDescription() == null) {
+        if (message.getDescription().isEmpty()) {
             throw new NullPointerException("Message Person mustn't be empty!");
         }
         this.messageService.save(message);
