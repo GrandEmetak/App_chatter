@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ import ru.job4j.service.PersonService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -122,6 +125,20 @@ public class PersonController {
                 this.personService.save(person),
                 HttpStatus.CREATED
         );
+    }
+
+    /**
+     * Раздача файла = Правила чата для пользователей PDF/pdf general chat rules
+     * @return pdf general chat rules.pdf
+     * @throws IOException
+     */
+    @GetMapping("/personrules")
+    public ResponseEntity<byte[]> example5() throws IOException {
+        var content = Files.readAllBytes(Path.of("./pdf general chat rules.pdf"));
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .contentLength(content.length)
+                .body(content);
     }
 
     /**
