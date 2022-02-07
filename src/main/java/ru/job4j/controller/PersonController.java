@@ -15,8 +15,11 @@ import ru.job4j.service.PersonService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -108,7 +111,8 @@ public class PersonController {
 
     /**
      * регистрация
-     *  + валидация на пустоя поле пароль/имя
+     * + валидация на пустоя поле пароль/имя
+     *
      * @param person
      * @return
      */
@@ -129,6 +133,7 @@ public class PersonController {
 
     /**
      * Раздача файла = Правила чата для пользователей PDF/pdf general chat rules
+     *
      * @return pdf general chat rules.pdf
      * @throws IOException
      */
@@ -139,6 +144,52 @@ public class PersonController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .contentLength(content.length)
                 .body(content);
+    }
+
+    /**
+     * DTO
+     * метод HTTP PATCH, который предназначен для частичного обновления данных.
+     * метод для обновления не нулевых полей адреса.
+     * Для этого использована воспользовать рефлексии для вызова нужных геттеров и сеттеров.
+     * @param person
+     * @return
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    @PatchMapping("/example2")
+    public ResponseEntity<Person> example2(@RequestBody Person person) throws InvocationTargetException, IllegalAccessException {
+        var current = personService.findById(person.getId());
+        if (current.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Person is not found. Please, check requisites id.");
+        }
+        var methods = current.get().getClass().getDeclaredMethods();
+        var namePerMethod = new HashMap<String, Method>();
+        for (var method : methods) {
+            var name = method.getName();
+            if (name.startsWith("get") || name.startsWith("set")) {
+                namePerMethod.put(name, method);
+            }
+        }
+        for (var name : namePerMethod.keySet()) {
+            if (name.startsWith("get")) {
+                var getMethod = namePerMethod.get(name);
+                var setMethod = namePerMethod.get(name.replace("get", "set"));
+                if (setMethod == null) {
+
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid properties mapping");
+                }
+                var newValue = getMethod.invoke(person);
+
+                if (newValue != null) {
+                    setMethod.invoke(current.get(), newValue);
+
+                }
+            }
+        }
+        return new ResponseEntity<>(
+                this.personService.save(person),
+                HttpStatus.OK);
     }
 
     /**

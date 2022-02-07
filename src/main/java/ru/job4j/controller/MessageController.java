@@ -6,8 +6,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.entity.Message;
 
+import ru.job4j.entity.Person;
 import ru.job4j.service.MessageService;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -85,6 +89,57 @@ public class MessageController {
         }
         this.messageService.deleteById(id);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     *
+
+     */
+    /**
+     * DTO
+     * метод HTTP PATCH, который предназначен для частичного обновления данных.
+     * метод для обновления не нулевых полей адреса.
+     * Для этого использована воспользовать рефлексии для вызова нужных геттеров и сеттеров.
+     *
+     * @param message
+     * @return
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    @PatchMapping("/example2")
+    public ResponseEntity<Message> example2(@RequestBody Message message) throws InvocationTargetException, IllegalAccessException {
+        var current = messageService.findById(message.getId());
+        if (current.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Message is not found. Please, check requisites id.");
+        }
+        var methods = current.get().getClass().getDeclaredMethods();
+        var namePerMethod = new HashMap<String, Method>();
+        for (var method : methods) {
+            var name = method.getName();
+            if (name.startsWith("get") || name.startsWith("set")) {
+                namePerMethod.put(name, method);
+            }
+        }
+        for (var name : namePerMethod.keySet()) {
+            if (name.startsWith("get")) {
+                var getMethod = namePerMethod.get(name);
+                var setMethod = namePerMethod.get(name.replace("get", "set"));
+                if (setMethod == null) {
+
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid properties mapping");
+                }
+                var newValue = getMethod.invoke(message);
+
+                if (newValue != null) {
+                    setMethod.invoke(current.get(), newValue);
+
+                }
+            }
+        }
+        return new ResponseEntity<>(
+                this.messageService.save(message),
+                HttpStatus.OK);
     }
 }
 
