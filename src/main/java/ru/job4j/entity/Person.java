@@ -4,27 +4,41 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 
 import java.util.List;
 
 /**
  * Модель пользователя в чате
+ * +
+ * добавлены Аннотации валидации
+ * - @NotBlank проверяет, что строка не пустая;
  */
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "person")
 public class Person {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private int id;
+    @Null(groups = Operation.OnCreate.class)
+    @NotNull(message = "Id must be non null", groups = {
+            Operation.OnUpdate.class,
+            Operation.OnDelete.class})
+        private int id;
 
+    @NotBlank(message = "User Name must be not empty")
     @Column(name = "username")
     private String username;
 
     @Column(name = "password")
+    @NotBlank(message = "Password must be not empty")
     private String password;
 
     @Column(name = "enabled")

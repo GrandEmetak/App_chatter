@@ -7,13 +7,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.entity.Operation;
 import ru.job4j.entity.Person;
 import ru.job4j.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,7 +42,20 @@ import java.util.stream.StreamSupport;
  * - @ExceptionHandler
  * Данная аннотация позволяет отслеживать и обрабатывать исключения на уровне класса.
  * Если использовать ее например в контроллере, то исключения только данного контроллера будут обрабатываться.
+ * +
+ * Достаточно добавить в параметр input аннотацию @Valid,
+ * чтобы сообщить спрингу передать объект Валидатору, прежде чем делать с ним что-либо еще.
+ * Исключение MethodArgumentNotValidException выбрасывается, когда объект не проходит проверку.
+ * По умолчанию, Spring переведет это исключение в HTTP статус 400.
+ * + Группы валидаций - класс содержащий группы class Operation
+ * их аннтотации перед методами @Validated(OnCreate.class) и тд
+ * +
+ * в случае валидации прямо в нутри параметров метода
+ *  public ResponseEntity<Person> findById(@PathVariable("id") @Min(1) int id) {
+ *  необходимо поставить аннотацию @Validated на уровне имени класса тогда Спринг будет знать что необходимо
+ *  предварительно валидировать помеченные данные
  */
+@Validated
 @RestController
 @RequestMapping("/persons")
 public class PersonController {
@@ -63,20 +80,30 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> findById(@PathVariable int id) {
-        if (id == 0) {
-            throw new NullPointerException("Person id mustn't be empty!");
+    public ResponseEntity<Person> findById(@PathVariable("id") @Min(1) int id) {
+            if (id == 0) {
+                throw new NullPointerException("Person id mustn't be empty!");
+            }
+            var person = this.personService.findById(id);
+            if (person.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "The Person is not found. Please, check requisites id.");
+            }
+            return new ResponseEntity<Person>(person.get(), HttpStatus.OK);
         }
-        var person = this.personService.findById(id);
-        if (person.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "The Person is not found. Please, check requisites id.");
-        }
-        return new ResponseEntity<Person>(person.get(), HttpStatus.OK);
-    }
 
+
+    /**
+     * create Object Message
+     * Validation что id объекта на момент создания -0,
+     * поля username and password not empty
+     *
+     * @param person Object
+     * @return
+     */
     @PostMapping("/")
-    public ResponseEntity<Person> create(@RequestBody Person person) {
+    @Validated(Operation.OnCreate.class)
+    public ResponseEntity<Person> create(@Valid @RequestBody Person person) {
         if (person.getUsername().isEmpty() || person.getPassword() == null) {
             throw new NullPointerException("Person username and password mustn't be empty!");
         }
@@ -86,8 +113,17 @@ public class PersonController {
         );
     }
 
+    /**
+     * Update object Person
+     * Validation object field id not null,
+     * username and password not empty
+     *
+     * @param person
+     * @return
+     */
     @PutMapping("/")
-    public ResponseEntity<Void> update(@RequestBody Person person) {
+    @Validated(Operation.OnUpdate.class)
+    public ResponseEntity<Void> update(@Valid @RequestBody Person person) {
         if (person.getUsername().isEmpty() || person.getPassword() == null) {
             throw new NullPointerException("Person username and password mustn't be empty!");
         }
@@ -95,8 +131,16 @@ public class PersonController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Delete Person object
+     * Validation object field id not null
+     *
+     * @param id
+     * @return
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    @Validated(Operation.OnDelete.class)
+    public ResponseEntity<Void> delete(@Valid @PathVariable int id) {
         if (id == 0) {
             throw new NullPointerException("Person id mustn't be empty");
         }
@@ -117,7 +161,7 @@ public class PersonController {
      * @return
      */
     @PostMapping("/sign-up")
-    public ResponseEntity<Person> signUp(@RequestBody Person person) {
+    public ResponseEntity<Person> signUp(@Valid @RequestBody Person person) {
         if (person.getPassword() == null || person.getUsername().isEmpty()) {
             throw new NullPointerException("Username and password mustn't be empty");
         }
@@ -151,6 +195,7 @@ public class PersonController {
      * метод HTTP PATCH, который предназначен для частичного обновления данных.
      * метод для обновления не нулевых полей адреса.
      * Для этого использована воспользовать рефлексии для вызова нужных геттеров и сеттеров.
+     *
      * @param person
      * @return
      * @throws InvocationTargetException

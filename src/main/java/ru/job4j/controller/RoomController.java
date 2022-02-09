@@ -1,13 +1,19 @@
 package ru.job4j.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.entity.Operation;
 import ru.job4j.entity.Person;
 import ru.job4j.entity.Room;
 import ru.job4j.service.RoomService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -24,10 +30,30 @@ import java.util.stream.StreamSupport;
  * аннотация @ControllerAdvise используемая совместно с @ExceptionHandler.
  * Код контроллера обрабатывает все исключения NullPointerException,
  * которые возникают во всех контроллерах:
+ * которые возникают во всех контроллерах:
+ * + использован на уровне контроллера
+ * - @ExceptionHandler
+ * Данная аннотация позволяет отслеживать и обрабатывать исключения на уровне класса.
+ * Если использовать ее например в контроллере, то исключения только данного контроллера будут обрабатываться.
+ * +
+ * Достаточно добавить в параметр input аннотацию @Valid,
+ * чтобы сообщить спрингу передать объект Валидатору, прежде чем делать с ним что-либо еще.
+ * Исключение MethodArgumentNotValidException выбрасывается, когда объект не проходит проверку.
+ * По умолчанию, Spring переведет это исключение в HTTP статус 400.
+ * + Группы валидаций - класс содержащий группы class Operation
+ * их аннтотации перед методами @Validated(OnCreate.class) и тд
+ * +
+ * в случае валидации прямо в нутри параметров метода
+ *  public ResponseEntity<Person> findById(@PathVariable("id") @Min(1) int id) {
+ *  необходимо поставить аннотацию @Validated на уровне имени класса тогда Спринг будет знать что необходимо
+ *  предварительно валидировать помеченные данные
  */
+@Validated
 @RestController
 @RequestMapping("/rooms")
 public class RoomController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoomController.class.getSimpleName());
 
     private final RoomService roomService;
 
@@ -43,7 +69,7 @@ public class RoomController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Room> findById(@PathVariable int id) {
+    public ResponseEntity<Room> findById(@PathVariable("id") @Min(1) int id) {
         if (id == 0) {
             throw new NullPointerException("The id Room mustn't be empty!");
         }
@@ -56,7 +82,8 @@ public class RoomController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Room> create(@RequestBody Room room) {
+    @Validated(Operation.OnCreate.class)
+    public ResponseEntity<Room> create(@Valid @RequestBody Room room) {
         if (room.getName().isEmpty()) {
             throw new NullPointerException("The Room name mustn't be empty!");
         }
@@ -67,7 +94,8 @@ public class RoomController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Void> update(@RequestBody Room room) {
+    @Validated(Operation.OnUpdate.class)
+    public ResponseEntity<Void> update(@Valid @RequestBody Room room) {
         if (room.getName().isEmpty()) {
             throw new NullPointerException("The Room name mustn't be empty!");
         }
@@ -89,7 +117,8 @@ public class RoomController {
      * @return
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    @Validated(Operation.OnDelete.class)
+    public ResponseEntity<Void> delete(@Valid @PathVariable int id) {
         if (id == 0) {
             throw new NullPointerException("The Room name mustn't be empty!");
         }
@@ -114,7 +143,8 @@ public class RoomController {
      * @throws IllegalAccessException
      */
     @PatchMapping("/example2")
-    public ResponseEntity<Room> example2(@RequestBody Room room) throws InvocationTargetException, IllegalAccessException {
+    @Validated(Operation.OnUpdate.class)
+    public ResponseEntity<Room> example2(@Valid @RequestBody Room room) throws InvocationTargetException, IllegalAccessException {
         var current = roomService.findById(room.getId());
         if (current.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
