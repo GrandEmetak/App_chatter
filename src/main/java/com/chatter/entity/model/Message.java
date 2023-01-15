@@ -1,29 +1,24 @@
-package com.chatter.entity;
+package com.chatter.entity.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Класс представляет модель Сообщения в чате
- * +
- * добавлены Аннотации валидации
- * - @NotBlank проверяет, что строка не пустая;
- * + @NotNull проверяет, что поле не null;
- * + Группы валидации
- * -@NotNull(message = "Id must be non null", groups = {
- * Operation.OnUpdate.class, Operation.OnDelete.class})
- * id - пуст присозданни, и полон при обновлении
- * при этом необходимо добавить в сам Контроллер где находятся методы
- * использующии эти данные аннтотацию @Validated
  */
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "message")
 public class Message {
@@ -35,20 +30,33 @@ public class Message {
     @NotNull(message = "Id must be non null", groups = {
             Operation.OnUpdate.class,
             Operation.OnDelete.class})
-    private int id;
+    int id;
 
     @NotBlank(message = "Description yours message must be not empty")
-    private String description;
+    @Column(name = "description")
+    String description;
 
-    private LocalDateTime created;
+    @Column(name = "created")
+    LocalDateTime created;
 
-    public Message() {
-    }
 
     public static Message of(int id, String description) {
         Message message = new Message();
         message.id = id;
         message.description = description;
         return message;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Message message = (Message) o;
+        return id != 0 && Objects.equals(id, message.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

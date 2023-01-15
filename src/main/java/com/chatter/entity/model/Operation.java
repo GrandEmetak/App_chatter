@@ -1,8 +1,8 @@
-package com.chatter.entity;
+package com.chatter.entity.model;
 
 /**
  * Группы валидации
- * +
+ * Пояснение по использованию
  * в модели данных необходимо указать
  * - @NotNull(message = "Id must be non null", groups = {
  *         Operation.OnUpdate.class, Operation.OnDelete.class

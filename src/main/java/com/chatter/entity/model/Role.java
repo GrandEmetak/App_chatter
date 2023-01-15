@@ -1,7 +1,7 @@
-package com.chatter.entity;
+package com.chatter.entity.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 
@@ -9,8 +9,12 @@ import javax.persistence.*;
  * Роли авторизации пользователей
  * User/Admin
  */
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 @Entity
 @Table(name = "role")
 public class Role {
@@ -23,6 +27,4 @@ public class Role {
     @Column(name = "authority")
     private String authority;
 
-    public Role() {
-    }
-}
+ }

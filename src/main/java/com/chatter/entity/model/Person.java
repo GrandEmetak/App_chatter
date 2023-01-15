@@ -1,7 +1,7 @@
-package com.chatter.entity;
+package com.chatter.entity.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 
@@ -14,12 +14,13 @@ import java.util.List;
 
 /**
  * Модель пользователя в чате
- * +
- * добавлены Аннотации валидации
- * - @NotBlank проверяет, что строка не пустая;
  */
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 @Entity
 @Table(name = "person")
 public class Person {
@@ -59,20 +60,4 @@ public class Person {
     @JoinColumn(name = "person_id")
     private List<Message> messages = new ArrayList<>();
 
-    public Person() {
-    }
-
-    public static Person of(int id, String username, String password, boolean enabled) {
-        Person person = new Person();
-        person.id = id;
-        person.username = username;
-        person.password = password;
-        person.enabled = enabled;
-        return person;
-    }
-
-    public Message addMessage(Message message) {
-        this.messages.add(message);
-        return message;
-    }
-}
+ }
