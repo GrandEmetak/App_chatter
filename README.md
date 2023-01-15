@@ -6,4 +6,15 @@
 
 1. Приложение построено на REST Api архитектуре через Spring Boot.
 2. Основные модели Person. Role. Room, Message.
-3. Приложение реализует простой чат c комнатами.
+3. Приложение реализует простой чат с комнатами.
+
+Used technologies stack:
+
+- Java Core
+- Rest API
+- Spring Boot (Data JPA, Web, Security)
+- Maven - Build Tool
+- PostgreSQL (DB)
+- Postman - Test REST API
+- Lombok  
+- Travis C.I.
