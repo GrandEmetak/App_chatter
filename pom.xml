@@ -9,11 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>ru.job4j</groupId>
-    <artifactId>job4j_chat</artifactId>
+    <groupId>com.chatter</groupId>
+    <artifactId>app_chatter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>job4j_chat</name>
-    <description>Demo project for Spring Boot</description>
+    <name>app_chat</name>
+    <description>Simple project App chatter</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
