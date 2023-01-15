@@ -60,4 +60,7 @@ public class Person {
     @JoinColumn(name = "person_id")
     private List<Message> messages = new ArrayList<>();
 
- }
+    public void addMessage(Message msg) {
+        this.messages.add(msg);
+    }
+}
