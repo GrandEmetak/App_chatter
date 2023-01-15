@@ -1,6 +1,6 @@
 package com.chatter.repository;
 
-import com.chatter.entity.Person;
+import com.chatter.entity.model.Person;
 import org.springframework.data.repository.CrudRepository;
 
 /**

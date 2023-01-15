@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import com.chatter.entity.Message;
-import com.chatter.entity.ReportMessage;
+import com.chatter.entity.model.Message;
+import com.chatter.entity.model.ReportMessage;
 
 import java.util.ArrayList;
 import java.util.List;

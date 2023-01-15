@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import static java.util.Collections.emptyList;
 
-import com.chatter.entity.Person;
+import com.chatter.entity.model.Person;
 import com.chatter.repository.PersonRepository;
 
 /**

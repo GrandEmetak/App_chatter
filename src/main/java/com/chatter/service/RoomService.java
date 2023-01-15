@@ -2,7 +2,7 @@ package com.chatter.service;
 
 import org.springframework.stereotype.Service;
 
-import com.chatter.entity.Room;
+import com.chatter.entity.model.Room;
 
 import com.chatter.repository.RoomRepository;
 

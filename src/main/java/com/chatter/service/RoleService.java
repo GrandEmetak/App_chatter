@@ -1,7 +1,7 @@
 package com.chatter.service;
 
 import org.springframework.stereotype.Service;
-import com.chatter.entity.Role;
+import com.chatter.entity.model.Role;
 import com.chatter.repository.RoleRepository;
 
 import java.util.Optional;

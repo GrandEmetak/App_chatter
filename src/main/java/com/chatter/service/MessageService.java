@@ -1,7 +1,7 @@
 package com.chatter.service;
 
 import org.springframework.stereotype.Service;
-import com.chatter.entity.Message;
+import com.chatter.entity.model.Message;
 
 import com.chatter.repository.MessageRepository;
 

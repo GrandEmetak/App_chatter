@@ -1,8 +1,8 @@
 package com.chatter.service;
 
 import org.springframework.stereotype.Service;
-import com.chatter.entity.Person;
-import com.chatter.entity.Role;
+import com.chatter.entity.model.Person;
+import com.chatter.entity.model.Role;
 import com.chatter.repository.PersonRepository;
 import com.chatter.repository.RoleRepository;
 

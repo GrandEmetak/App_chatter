@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import com.chatter.entity.Operation;
-import com.chatter.entity.Room;
+import com.chatter.entity.model.Operation;
+import com.chatter.entity.model.Room;
 import com.chatter.service.RoomService;
 
 import javax.validation.Valid;

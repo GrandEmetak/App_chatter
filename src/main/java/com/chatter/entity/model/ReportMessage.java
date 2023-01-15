@@ -1,4 +1,4 @@
-package com.chatter.entity;
+package com.chatter.entity.model;
 
 import lombok.Data;
 
