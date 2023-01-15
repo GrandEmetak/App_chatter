@@ -15,9 +15,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.context.annotation.Bean;
 
-/**
- * Осталось сконфигурировать Web.
- */
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
