@@ -9,10 +9,10 @@ sudo: false
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
-# Отправлять уведомление на почту JekHamond@tutanota.com(Изменить на свою) если сборка упала
+# Отправлять уведомление на почту @.com(Изменить на свою) если сборка упала
 notifications:
   email:
     recipients:
-      -JekHamond@tutanota.com
+      -@.com
     on_success: never # default: change
     on_failure: always # default: always
